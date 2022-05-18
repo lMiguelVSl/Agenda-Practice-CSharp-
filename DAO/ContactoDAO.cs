@@ -16,7 +16,7 @@ namespace SofkaPractice.DAO
         public static string connectionString = ConfigurationManager.ConnectionStrings["MyConnection"].ConnectionString; //por medio del nuget manager manipulo mi config
         public static void AddContact(string Nombre, string cellphone, string correoElectronico, double SaldoDolares)
         {
-            if (ValidContact(cellphone, correoElectronico) == 0)
+            if (ValidContact(cellphone) == 0)
             {
 
                 using (SqlConnection connection = new SqlConnection(connectionString))
@@ -34,14 +34,14 @@ namespace SofkaPractice.DAO
                 Console.WriteLine("The user already exist");
                 Agenda.Start();
             }
-
+            Agenda.Start();
         }
-        public static int ValidContact(string cellphone, string correoElectronico)
+        public static int ValidContact(string cellphone)
         {
             List<Contacto> contactos = new();
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                SqlCommand queryGetContact = new SqlCommand($"select * from Contacto where numeroTelefonico = '{cellphone}' or correoElectronico = '{correoElectronico}'", connection);
+                SqlCommand queryGetContact = new SqlCommand($"select * from Contacto where numeroTelefonico = '{cellphone}' or correoElectronico = '{cellphone}'", connection);
                 connection.Open();
                 SqlDataReader reader = queryGetContact.ExecuteReader();
                 while (reader.Read())
@@ -95,6 +95,7 @@ namespace SofkaPractice.DAO
                 Console.WriteLine(" ");
             }
             Console.ReadKey();
+            Agenda.Start();
         }
         public static void GetOne(string correoElectronico)
         {
@@ -127,6 +128,26 @@ namespace SofkaPractice.DAO
                 Console.WriteLine(" ");
             }
             Console.ReadKey();
+        }
+        public static void changeAmount(string number, double newValue)
+        {
+            if (ValidContact(number) >= 1)
+            {
+                using (SqlConnection connection = new SqlConnection(connectionString))
+                {
+                    SqlCommand command = new SqlCommand($"update Contacto set saldoDolares='{newValue}' where numeroTelefonico = '{number}';", connection);
+                    connection.Open();
+                    int numberRowsAfected = command.ExecuteNonQuery();
+                    Console.WriteLine("The amount changed \n" +
+                        $"{numberRowsAfected} Rows afected");
+                }
+            }
+            else
+            {
+                Console.WriteLine("The contact dosen't exist");
+            }
+
+            Agenda.Start();
         }
     }
 }

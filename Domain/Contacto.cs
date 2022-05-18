@@ -14,7 +14,7 @@ namespace SofkaPractice.Domain
         public string  NumeroTelefonico { get; set; }
         public string CorreoElectronico { get; set; }
         public double SaldoDolares { get; set; }
-        public ContactoDAO contactoDAO { get; set; }
+       
         public Contacto(int contactoId, string nombreContacto, string numeroTelefonico, string correoElectronico, double saldoDolares)
         {
 
@@ -23,25 +23,20 @@ namespace SofkaPractice.Domain
             NumeroTelefonico = numeroTelefonico;
             CorreoElectronico = correoElectronico;
             SaldoDolares = saldoDolares;
-            contactoDAO = new ContactoDAO();
+            
 
         }
         public Contacto()
         {
 
         }
-        public void getAll(string correoElectronico)
+        public static void getAll()
         {
-            Contacto contacto = new();
-           if(correoElectronico == contacto.CorreoElectronico)
-            {
-                Console.WriteLine($"Id de contacto: {ContactoId}, \n" +
-                 $"Nombre del contacto: {NombreContacto} \n" +
-                 $"Numero de contacto: {NumeroTelefonico} \n" +
-                 $"Correo electronico: {CorreoElectronico} \n" +
-                 $"Saldo: {SaldoDolares}");
-            }
-         
+            ContactoDAO.GetAll();
+        }
+        public static void changeAmount(string number,double newValue)
+        {
+            ContactoDAO.changeAmount(number,newValue);
         }
     }
     

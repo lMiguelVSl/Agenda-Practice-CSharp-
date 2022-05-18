@@ -1,4 +1,5 @@
-﻿using SofkaPractice.DAO;
+﻿
+using SofkaPractice.DAO;
 using System;
 using System.Collections.Generic;
 using System.Data.SqlClient;
@@ -25,7 +26,8 @@ namespace SofkaPractice.Domain
                     "4. Update account value \n" +
                     "5. Transfer money \n" +
                     "6. Update contact \n" +
-                    "7. Delete contact");
+                    "7. Delete contact \n" +
+                    "8. Exit");
                 option = GetIntegerData(Console.ReadLine());
                 cases(option);
             } catch (Exception ex)
@@ -47,6 +49,18 @@ namespace SofkaPractice.Domain
                
             }
         }
+        private static double GetDoubleData(string p)
+        {
+            if (!double.TryParse(p, out double result))
+            {
+                throw new ApplicationException("The enter value is incorrect");
+            }
+            else
+            {
+                return result;
+            }
+                
+        }
 
         public static void cases(int option)
         {
@@ -64,7 +78,7 @@ namespace SofkaPractice.Domain
                     ContactoDAO.AddContact(nombre,cellphone,correoElectronico,SaldoDolares);
                     break;
                 case 2:
-                    ContactoDAO.GetAll();
+                    Contacto.getAll();
                     break;
                 case 3:
                     Console.WriteLine("write the email or the cellphone");
@@ -72,49 +86,33 @@ namespace SofkaPractice.Domain
                     ContactoDAO.GetOne(stringSelect);
                     break;
                 case 4:
-                    UpdateValue();
+                    Console.WriteLine("Write the Number or the email:");
+                    string number = Console.ReadLine();
+                    Console.WriteLine("Write the new amount: ");
+                    double newValue = GetDoubleData(Console.ReadLine());
+                    Contacto.changeAmount(number,newValue);
                     break;
                 case 5:
-                    TransferMoney();
+                    
                     break;
                 case 6:
-                    UpdateContact();
+                   
                     break;
                 case 7:
-                    DeleteContact();
+                    
+                    break;
+                case 8:
+                    Environment.Exit(0);
                     break;
             }
         }
 
-        public static void SelectAll()
-        {
-           
-        }
-
-        public static void SelectOne()
-        {
-            
-        }
-
+        
         public static void UpdateValue()
         {
             
         }
 
-        public static void TransferMoney()
-        {
-            
-        }
-
-        public static void UpdateContact()
-        {
-           
-        }
-
-        public static void DeleteContact()
-        {
-           
-        } 
 
     }
 }
