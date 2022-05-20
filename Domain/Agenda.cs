@@ -79,7 +79,28 @@ namespace SofkaPractice.Domain
                     
                     break;
                 case 5:
-
+                    //transfer money
+                    Console.WriteLine("Write the number or email of the contact to take the value: ");
+                    string dataTake = Console.ReadLine();
+                    Console.WriteLine("Write the number or email of the contact to put the money in");
+                    string dataPut = Console.ReadLine();
+                    Console.WriteLine("Write the amount to transfer");
+                    double amount = GetDoubleData(Console.ReadLine());
+                    Console.WriteLine($"Base contact: {dataTake} \n" +
+                        $"Destiny contact: {dataPut} \n" +
+                        $"Amount: {amount} \n" +
+                        $"If al the data if correct write 1");
+                    int validation = GetIntegerData(Console.ReadLine());
+                   while(validation != 1)
+                    {
+                        Console.WriteLine("Select the correct option");
+                        Console.WriteLine($"Base contact: {dataTake} \n" +
+                        $"Destiny contact: {dataPut} \n" +
+                        $"Amount: {amount} \n" +
+                        $"If al the data if correct write 1");
+                        validation = GetIntegerData(Console.ReadLine());
+                    }
+                   //do the transfer
                     break;
                 case 6:
 
