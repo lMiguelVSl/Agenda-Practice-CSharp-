@@ -11,7 +11,7 @@ namespace SofkaPractice.Domain
 {
     public class Agenda
     {
-        public Contacto Contacto { get;}
+        public Contacto Contacto { get; }
 
         public static void Start()
         {
@@ -30,41 +30,19 @@ namespace SofkaPractice.Domain
                     "8. Exit");
                 option = GetIntegerData(Console.ReadLine());
                 cases(option);
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Console.WriteLine(ex);
             }
 
         }
 
-        private static int GetIntegerData(string v) //metodo para verificar el valor ingresado 
-        {
-            if (!int.TryParse(v, out int result))
-            {
-                throw new ApplicationException("The enter value is incorrect");
-            }
-            else
-            {
-                return result;
-               
-            }
-        }
-        private static double GetDoubleData(string p)
-        {
-            if (!double.TryParse(p, out double result))
-            {
-                throw new ApplicationException("The enter value is incorrect");
-            }
-            else
-            {
-                return result;
-            }
-                
-        }
+
 
         public static void cases(int option)
         {
-           switch (option)
+            switch (option)
             {
                 case 1:
                     Console.WriteLine("Write the name");
@@ -75,7 +53,7 @@ namespace SofkaPractice.Domain
                     string correoElectronico = Console.ReadLine();
                     Console.WriteLine("Write the dollar amount");
                     double SaldoDolares = Convert.ToDouble(Console.ReadLine());
-                    ContactoDAO.AddContact(nombre,cellphone,correoElectronico,SaldoDolares);
+                    ContactoDAO.AddContact(nombre, cellphone, correoElectronico, SaldoDolares);
                     break;
                 case 2:
                     Contacto.getAll();
@@ -90,28 +68,67 @@ namespace SofkaPractice.Domain
                     string number = Console.ReadLine();
                     Console.WriteLine("Write the new amount: ");
                     double newValue = GetDoubleData(Console.ReadLine());
-                    Contacto.changeAmount(number,newValue);
+                    if (ValidateTheAmount(newValue))
+                    {
+                        Contacto.changeAmount(number, newValue);
+                    }
+                    else
+                    {
+                        Console.WriteLine("The value cannot be negative");
+                    }
+                    
                     break;
                 case 5:
-                    
+
                     break;
                 case 6:
-                   
+
                     break;
                 case 7:
-                    
+
                     break;
                 case 8:
                     Environment.Exit(0);
                     break;
             }
         }
-
-        
-        public static void UpdateValue()
+        private static int GetIntegerData(string v) //metodo para verificar el valor ingresado 
         {
-            
+            if (!int.TryParse(v, out int result))
+            {
+                throw new ApplicationException("The enter value is incorrect");
+            }
+            else
+            {
+                return result;
+
+            }
         }
+        private static double GetDoubleData(string p)
+        {
+            if (!double.TryParse(p, out double result))
+            {
+                throw new ApplicationException("The enter value is incorrect");
+            }
+            else
+            {
+                return result;
+            }
+
+        }
+        private static bool ValidateTheAmount(double value)
+        {
+            if (value < 0)
+            {
+                return false;
+            }
+            else
+            {
+                return true;
+            }
+        }
+
+
 
 
     }
