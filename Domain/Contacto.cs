@@ -40,7 +40,15 @@ namespace SofkaPractice.Domain
         }
         public static void TransactionAmount(string contactBy, string contactFor, double amount)
         {
+            Console.WriteLine("Contact to be debited before the transaction");
+            ContactoDAO.GetOne(contactBy);
+            Console.WriteLine("Contact to deposit the amount befor the transaction");
+            ContactoDAO.GetOne(contactFor);
             ContactoDAO.Transaction(contactBy,contactFor,amount);
+            Console.WriteLine("Contact to be debited after the transaction");
+            ContactoDAO.GetOne(contactBy);
+            Console.WriteLine("Contact to deposit after the transaction");
+            ContactoDAO.GetOne(contactFor);
         }
     }
     
