@@ -38,6 +38,10 @@ namespace SofkaPractice.Domain
         {
             ContactoDAO.changeAmount(number,newValue);
         }
+        public static void TransactionAmount(string contactBy, string contactFor, double amount)
+        {
+            ContactoDAO.Transaction(contactBy,contactFor,amount);
+        }
     }
     
 }

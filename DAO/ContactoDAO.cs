@@ -14,6 +14,7 @@ namespace SofkaPractice.DAO
     public class ContactoDAO
     {
         public static string connectionString = ConfigurationManager.ConnectionStrings["MyConnection"].ConnectionString; //por medio del nuget manager manipulo mi config
+        private static SqlConnection connection = new SqlConnection(connectionString);
         public static void AddContact(string Nombre, string cellphone, string correoElectronico, double SaldoDolares)
         {
             if (ValidContact(cellphone) == 0)
@@ -39,7 +40,7 @@ namespace SofkaPractice.DAO
         public static int ValidContact(string cellphone)
         {
             List<Contacto> contactos = new();
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (connection)
             {
                 SqlCommand queryGetContact = new SqlCommand($"select * from Contacto where numeroTelefonico = '{cellphone}' or correoElectronico = '{cellphone}'", connection);
                 connection.Open();
@@ -133,7 +134,7 @@ namespace SofkaPractice.DAO
         {
             if (ValidContact(number) >= 1)
             {
-                using (SqlConnection connection = new SqlConnection(connectionString))
+                using (connection)
                 {
                     SqlCommand command = new SqlCommand($"update Contacto set saldoDolares='{newValue}' where numeroTelefonico = '{number}';", connection);
                     connection.Open();
@@ -148,6 +149,98 @@ namespace SofkaPractice.DAO
             }
 
             Agenda.Start();
+        }
+
+        public static void Transaction(string contactBy, string contactFor, double amount)
+        {
+            double amountFrom;
+            double amountFor=0;
+            List<Contacto> contactos = new();
+            List<Contacto> contactosBy = new();
+            if (ValidAmount(contactFor, amount))
+            {
+                using (connection)
+                {
+                    SqlCommand queryGetContact = new SqlCommand($"select * from Contacto where numeroTelefonico = '{contactFor}' or correoElectronico = '{contactFor}'", connection);
+                    connection.Open();
+                    SqlDataReader reader = queryGetContact.ExecuteReader();
+                    while (reader.Read())
+                    {
+                        Contacto contacto = new(
+                            Convert.ToInt32(reader["contactoId"]),
+                            Convert.ToString(reader["nombreContacto"]),
+                            Convert.ToString(reader["numeroTelefonico"]),
+                            Convert.ToString(reader["correoElectronico"]),
+                            Convert.ToDouble(reader["saldoDolares"]));
+                        contactos.Add(contacto);
+                    }
+                    SqlCommand queryGetContactBy = new SqlCommand($"select * from Contacto where numeroTelefonico = '{contactBy}' or correoElectronico = '{contactBy}'", connection);
+                    SqlDataReader readerBy = queryGetContactBy.ExecuteReader();
+                    while (readerBy.Read())
+                    {
+                        Contacto contactoBy = new(
+                            Convert.ToInt32(readerBy["contactoId"]),
+                            Convert.ToString(readerBy["nombreContacto"]),
+                            Convert.ToString(readerBy["numeroTelefonico"]),
+                            Convert.ToString(readerBy["correoElectronico"]),
+                            Convert.ToDouble(readerBy["saldoDolares"]));
+                        contactosBy.Add(contactoBy);
+                    }
+                    foreach (var item in contactosBy)
+                    {
+                        if (item.CorreoElectronico == contactBy || item.NumeroTelefonico == contactBy && item.SaldoDolares-amount >= 0)
+                        {
+                            amountFrom = item.SaldoDolares - amount;                           
+                        } else if (item.CorreoElectronico == contactFor || item.NumeroTelefonico == contactFor)
+                        {
+                            amountFor = item.SaldoDolares + amount;
+                        }
+                    }
+
+                    SqlCommand sqlCommand = new SqlCommand($"update Contacto set saldoDolares='{amountFor}' where numeroTelefonico='{contactFor}' or correoElectronico='{contactFor}'", connection);
+                    int numberRowsAfected = sqlCommand.ExecuteNonQuery();
+                    Console.WriteLine("The amount changed \n" +
+                        $"{numberRowsAfected} Rows afected");
+                }
+            }
+
+        }
+        public static bool ValidAmount(string contactFor,double amount)
+        {
+            bool flag = true;
+            List<Contacto> contactos = new();
+            using (connection)
+            {               
+                SqlCommand queryGetContact = new SqlCommand($"select * from Contacto where numeroTelefonico = '{contactFor}' or correoElectronico = '{contactFor}'", connection);
+                connection.Open();
+                SqlDataReader reader = queryGetContact.ExecuteReader();
+                while (reader.Read())
+                {
+                    Contacto contacto = new(
+                        Convert.ToInt32(reader["contactoId"]),
+                        Convert.ToString(reader["nombreContacto"]),
+                        Convert.ToString(reader["numeroTelefonico"]),
+                        Convert.ToString(reader["correoElectronico"]),
+                        Convert.ToDouble(reader["saldoDolares"]));
+                    contactos.Add(contacto);
+                }
+            }
+            foreach (var item in contactos)
+            {
+                if (item.CorreoElectronico == contactFor || item.NumeroTelefonico == contactFor && item.SaldoDolares - amount < 0)
+                {
+                    Console.WriteLine("You're exceeding the amount possible ");
+                    flag = false;
+                }
+                else
+                {
+                    flag = true;
+                    return true;
+                }
+            }
+            return flag;
+
+           
         }
     }
 }

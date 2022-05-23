@@ -89,7 +89,7 @@ namespace SofkaPractice.Domain
                     Console.WriteLine($"Base contact: {dataTake} \n" +
                         $"Destiny contact: {dataPut} \n" +
                         $"Amount: {amount} \n" +
-                        $"If al the data if correct write 1");
+                        $"If all the data is correct write 1");
                     int validation = GetIntegerData(Console.ReadLine());
                    while(validation != 1)
                     {
@@ -100,7 +100,7 @@ namespace SofkaPractice.Domain
                         $"If al the data if correct write 1");
                         validation = GetIntegerData(Console.ReadLine());
                     }
-                   //do the transfer
+                    Contacto.TransactionAmount(dataTake,dataPut,amount);
                     break;
                 case 6:
 
